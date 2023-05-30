@@ -47,7 +47,7 @@ namespace SnakeGame
             {
                 for (int col = 0; col < Columns; col++)
                 {
-                    if (Grid[row, col] == GridValue.Empty) ;
+                    if (Grid[row, col] == GridValue.Empty) 
                     {
                         yield return new Position(row, col);
                     }
