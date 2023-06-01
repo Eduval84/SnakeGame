@@ -100,7 +100,7 @@ namespace SnakeGame
         /// This method is for move the snake 
         /// </summary>
         /// <param name="pos"></param>
-        private void RemoveTail(Position pos)
+        private void RemoveTail()
         {
             Position tail = TailPosition();
             Grid[tail.Row, tail.Column] = GridValue.Empty;
@@ -134,9 +134,39 @@ namespace SnakeGame
         /// Check what is store in the grid for the next position
         /// </summary>
         /// <returns></returns>
-        private GridValue WillHit (Position newHeaderPosition)
+        private GridValue WillHit (Position newHeadPosition)
         {
-            return Grid[newHeaderPosition.Row, newHeaderPosition.Column];
+            if (OutsideGrid(newHeadPosition))
+                return GridValue.Outside;
+
+            if (newHeadPosition == TailPosition())
+                return GridValue.Empty;
+
+            return Grid[newHeadPosition.Row, newHeadPosition.Column];
+        }
+
+        /// <summary>
+        /// Need to control some uses cases
+        /// we have to evaluate several use cases 
+        /// 1-the movement can be performed, in this case we remove the tail and move the snake's tail one more position.
+        /// 2-the next movement is food, in this case we only move the head and do not eliminate the tail.
+        /// 3-the next movement causes a collision against the wall or the snake itself, in this case the game is over.
+        /// </summary>
+        public void Move()
+        {
+            Position newHeadPosition = headPosition().Translate(Direction);
+            GridValue hit = WillHit(newHeadPosition);
+            if (hit == GridValue.Empty)
+            {
+                RemoveTail();
+                AddHead(newHeadPosition);
+            }else if (hit == GridValue.Food)
+            {
+                AddHead(newHeadPosition);
+                Score++;
+                AddFood();
+            }else if(hit == GridValue.Outside || hit == GridValue.Snake)
+                GameOver = true;
         }
 
     }
