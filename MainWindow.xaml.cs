@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32.SafeHandles;
+using static System.Windows.Input.Key;
 
 namespace SnakeGame
 {
@@ -29,21 +30,55 @@ namespace SnakeGame
         };
         private readonly int rows = 15, cols = 15;
         private readonly Image[,] gridImages;
-        private GameStatus gameState;
+        private readonly InitalGameStatus gameState;
 
         public MainWindow()
         {
             InitializeComponent();
             gridImages = SetupGrid();
-            gameState = new GameStatus(rows, cols);
+            gameState = new InitalGameStatus(rows, cols);
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             Draw();
         }
-        private void MainWindow_OnKeyDown_(object sender, KeyEventArgs e)
+
+        private async void MainWindow_OnKeyDown_(object sender, KeyEventArgs e)
         {
+            if (gameState.GameOver)
+            {
+                return;
+            }
+
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    await GameLoop();
+                    break;
+                case Up: 
+                    gameState.ChangeDirection(Direction.Up);
+                    break;
+                case Down: 
+                    gameState.ChangeDirection(Direction.Down);
+                    break;
+                case Key.Left:
+                    gameState.ChangeDirection(Direction.Left);
+                    break;
+                case Right:
+                    gameState.ChangeDirection(Direction.Right);
+                    break;
+            }
+        }
+
+        private async Task GameLoop()
+        {
+            while (!gameState.GameOver)
+            {
+                await Task.Delay(100);
+                gameState.Move();
+                Draw();
+            }
         }
 
         private Image[,] SetupGrid()

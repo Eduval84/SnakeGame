@@ -6,7 +6,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace SnakeGame
 {
-    internal class GameStatus
+    internal class InitalGameStatus
     {
         public int Rows { get; }
         public int Columns { get; }
@@ -19,7 +19,7 @@ namespace SnakeGame
 
         private readonly Random foodPosition = new Random();
 
-        public GameStatus(int rows, int cols)
+        public InitalGameStatus(int rows, int cols)
         {
             Rows = rows;
             Columns = cols;
@@ -127,7 +127,7 @@ namespace SnakeGame
         /// <returns></returns>
         private bool OutsideGrid (Position pos)
         {
-            return pos.Row < 0 || pos.Row <= Rows || pos.Column < 0 || pos.Column<= Columns;
+            return pos.Row < 0 || pos.Row >= Rows || pos.Column < 0 || pos.Column >= Columns;
         }
 
         /// <summary>
