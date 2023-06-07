@@ -6,7 +6,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace SnakeGame
 {
-    internal class GameLogic
+    internal class GameStatus
     {
         public int Rows { get; }
         public int Columns { get; }
@@ -19,7 +19,7 @@ namespace SnakeGame
 
         private readonly Random foodPosition = new Random();
 
-        public GameLogic(int rows, int cols)
+        public GameStatus(int rows, int cols)
         {
             Rows = rows;
             Columns = cols;
@@ -38,7 +38,7 @@ namespace SnakeGame
         {
             int middle = Rows / 2;
 
-            for (int col = 1; col < 3; col++)
+            for (int col = 1; col <= 3; col++)
             {
                 Grid[middle, col] = GridValue.Snake;
                 snakePositions.AddFirst(new Position(middle, col));
