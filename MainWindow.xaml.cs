@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32.SafeHandles;
 using static System.Windows.Input.Key;
 
 namespace SnakeGame
@@ -30,13 +21,13 @@ namespace SnakeGame
         };
         private readonly int rows = 15, cols = 15;
         private readonly Image[,] gridImages;
-        private readonly InitalGameStatus gameState;
+        private readonly GameState gameState;
 
         public MainWindow()
         {
             InitializeComponent();
             gridImages = SetupGrid();
-            gameState = new InitalGameStatus(rows, cols);
+            gameState = new GameState(rows, cols);
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -53,7 +44,7 @@ namespace SnakeGame
 
             switch (e.Key)
             {
-                case Key.Enter:
+                case Enter:
                     await GameLoop();
                     break;
                 case Up: 

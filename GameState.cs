@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using static System.Net.Mime.MediaTypeNames;
+using System.Runtime.InteropServices.Marshalling;
+using System.Windows.Automation.Provider;
 
 namespace SnakeGame
 {
-    internal class InitalGameStatus
+    internal class GameState
     {
         public int Rows { get; }
         public int Columns { get; }
@@ -15,11 +14,11 @@ namespace SnakeGame
         public int Score { get; private set; }
         public bool GameOver { get; private set; }
 
+        private readonly LinkedList<Direction> dirChanges = new LinkedList<Direction>();
         private readonly LinkedList<Position> snakePositions = new LinkedList<Position>();
-
         private readonly Random foodPosition = new Random();
 
-        public InitalGameStatus(int rows, int cols)
+        public GameState(int rows, int cols)
         {
             Rows = rows;
             Columns = cols;
@@ -118,6 +117,28 @@ namespace SnakeGame
         public void ChangeDirection(Direction newDirection)
         {
             Direction = newDirection;
+            dirChanges.AddLast(newDirection);
+        }
+
+        private bool CanChangeDirection(Direction newDirection)
+        {
+            if (dirChanges.Count == 2)
+                return false;
+
+            var lastDir = GetlastDirection();
+            return (lastDir != newDirection) && newDirection != lastDir.Opposite();
+            
+
+            return true;
+        }
+
+
+        private Direction GetlastDirection()
+        {
+            if (dirChanges.Count == 0)
+                return Direction;
+
+            return dirChanges.Last?.Value;
         }
 
         /// <summary>
@@ -154,6 +175,11 @@ namespace SnakeGame
         /// </summary>
         public void Move()
         {
+            if (dirChanges.Count > 0)
+            {
+                Direction = dirChanges.First.Value;
+                dirChanges.RemoveLast();
+            }
             Position newHeadPosition = headPosition().Translate(Direction);
             GridValue hit = WillHit(newHeadPosition);
             if (hit == GridValue.Empty)
